@@ -1116,11 +1116,11 @@
                 <debug>1</debug>
                 <option>
                     <name>GenRtcDebugHeap</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>GenRtcEnableBoundsChecking</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>GenRtcCheckPtrsNonInstrMem</name>
@@ -1172,11 +1172,11 @@
                 </option>
                 <option>
                     <name>GenRtcDivByZero</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>GenRtcEnable</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>GenRtcCheckPtrsNonInstrFunc</name>
@@ -2949,6 +2949,12 @@
         </group>
         <group>
             <name>sipstack</name>
+            <file>
+                <name>$PROJ_DIR$\src\sipstack\sip-hdr.cpp</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\src\sipstack\sip-hdr.hpp</name>
+            </file>
             <file>
                 <name>$PROJ_DIR$\src\sipstack\sip-message.cpp</name>
             </file>

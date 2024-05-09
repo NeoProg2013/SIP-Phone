@@ -22,7 +22,7 @@ void sipstack_t::tick() {
     int length = recvfrom(global_env::SIP_SOCKET, buffer, 1024, addr, &port);
     if (length > 0) {
         sip_message_t sip_message;
-        sip_message.parse(buffer, length);
+        sip_message.parse((const char*)buffer, length);
         asm("nop");
     }
     asm("nop");

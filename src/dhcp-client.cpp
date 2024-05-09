@@ -2,7 +2,7 @@
 #include "dhcp.h"
 
 
-uint8_t dhcp_data_buffer[2024];
+uint8_t dhcp_data_buffer[512];
 wiz_NetInfo net_info = { 
     .mac = {0x00, 0x08, 0xdc, 0xab, 0xcd, 0xef},
     .ip  = {0, 0, 0, 0},

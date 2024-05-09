@@ -1,15 +1,16 @@
 #include "project-base.hpp"
-#include "sipstack.hpp"
 #include "dhcp-client.hpp"
+#include "sipstack.hpp"
 
 static void system_init(void);
 static void fault_loop();
 
 
-void HardFault_Handler() {
+
+extern "C" void HardFault_Handler() {
     fault_loop();
 }
-void SysTick_Handler(void) {
+extern "C" void SysTick_Handler(void) {
     HAL_IncTick();
 }
 

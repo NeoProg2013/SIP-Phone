@@ -465,7 +465,7 @@
                 </option>
                 <option>
                     <name>IccExceptions2</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>IccRTTI2</name>
@@ -923,7 +923,7 @@
                 </option>
                 <option>
                     <name>IlinkOptInline</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>IlinkOptExceptionsAllow</name>
@@ -2643,6 +2643,12 @@
         </group>
         <group>
             <name>sipstack</name>
+            <file>
+                <name>$PROJ_DIR$\src\sipstack\sip-hdr.cpp</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\src\sipstack\sip-hdr.hpp</name>
+            </file>
             <file>
                 <name>$PROJ_DIR$\src\sipstack\sip-message.cpp</name>
             </file>

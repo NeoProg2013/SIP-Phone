@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <string>
 #include <map>
+#include <list>
 
 namespace global_env {
     static const uint8_t DHCP_SOCKET = 1;
