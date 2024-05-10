@@ -17,7 +17,13 @@ protected:
 };
 
 class sip_from_hdr_t {
+public:
+    int parse(const char* data, int data_size);
+    void reset();
 
+protected:
+    std::string m_display_name;
+    //CSipUri	m_clsUri;
 };
 
 

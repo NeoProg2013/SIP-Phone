@@ -2731,37 +2731,13 @@
                 <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_adc.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_adc_ex.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_can.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_cec.c</name>
-            </file>
-            <file>
                 <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_cortex.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_crc.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_dac.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_dac_ex.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_dma.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_eth.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_exti.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_flash.c</name>
@@ -2776,18 +2752,6 @@
                 <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_gpio_ex.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_hcd.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_i2c.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_i2s.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_irda.c</name>
-            </file>
-            <file>
                 <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_iwdg.c</name>
             </file>
             <file>
@@ -2795,21 +2759,6 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_msp_template.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_nand.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_nor.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_pccard.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_pcd.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_pcd_ex.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_pwr.c</name>
@@ -2821,22 +2770,7 @@
                 <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_rcc_ex.c</name>
             </file>
             <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_rtc.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_rtc_ex.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_sd.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_smartcard.c</name>
-            </file>
-            <file>
                 <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_spi.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_sram.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_tim.c</name>
@@ -2852,57 +2786,6 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\HAL\Src\stm32f1xx_hal_wwdg.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_ll_adc.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_ll_crc.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_ll_dac.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_ll_dma.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_ll_exti.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_ll_fsmc.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_ll_gpio.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_ll_i2c.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_ll_pwr.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_ll_rcc.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_ll_rtc.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_ll_sdmmc.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_ll_spi.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_ll_tim.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_ll_usart.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_ll_usb.c</name>
-            </file>
-            <file>
-                <name>$PROJ_DIR$\HAL\Src\stm32f1xx_ll_utils.c</name>
             </file>
         </group>
     </group>

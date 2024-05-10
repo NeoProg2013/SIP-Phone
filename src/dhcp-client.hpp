@@ -14,7 +14,9 @@ public:
     bool is_ip_address_set() const;
 
 protected:
-    bool m_is_ip_address_set      {false};
+    uint8_t m_buffer[512];
+    uint32_t m_tick_counter             {0};
+    bool m_is_ip_address_set            {false};
 };
 
 
