@@ -48,29 +48,30 @@ void sip_param_t::clear() {
 
 
 int sip_param_t::list_param_parse(const char* data, int data_size, std::list<sip_param_t>* param_list) {
+    return sip_param_t::list_param_parse(data, data_size, param_list, [](char a, int* cur_pos) -> int {
+        if (a == ' ' || a == '\t' || a == ';') {
+            ++(*cur_pos);
+            return 1; // continue
+        } else if (a == ',') {
+            return -1; // break
+        }
+        return 0; // parsing
+	});
+}
+int sip_param_t::list_param_parse(const char* data, int data_size, std::list<sip_param_t>* param_list, std::function<int(char, int*)> f) {
     int cur_pos = 0;
     while (cur_pos < data_size) {
-        if (data[cur_pos] == ' ' || data[cur_pos] == '\t' || data[cur_pos] == ';') {
-            ++cur_pos;
-            continue;
-        } else if (data[cur_pos] == ',') {
-            break;
-        }
+        int idx = f(data[cur_pos], &cur_pos);
+        if (idx == -1) break;
+        if (idx ==  1) continue;
 
-        int idx = sip_param_t::single_param_parse(data + cur_pos, data_size - cur_pos, param_list);
+        sip_param_t param;
+        idx = param.parse(data + cur_pos, data_size - cur_pos);
         if (idx == -1) {
             return -1;
         }
+        param_list->push_back(param);
         cur_pos += idx;
     }
     return cur_pos;
-}
-int sip_param_t::single_param_parse(const char* data, int data_size, std::list<sip_param_t>* param_list) {
-    sip_param_t sip_param;
-    int idx = sip_param.parse(data, data_size);
-    if (idx == -1) {
-        return -1;
-    }
-    param_list->push_back(sip_param);
-    return idx;
 }

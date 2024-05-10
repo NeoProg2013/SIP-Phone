@@ -13,7 +13,7 @@ public:
 
 public:
     static int list_param_parse(const char* data, int data_size, std::list<sip_param_t>* param_list);
-    static int single_param_parse(const char* data, int data_size, std::list<sip_param_t>* param_list);
+    static int list_param_parse(const char* data, int data_size, std::list<sip_param_t>* param_list, std::function<int(char, int*)> f);
 
 protected:
     std::string m_name;

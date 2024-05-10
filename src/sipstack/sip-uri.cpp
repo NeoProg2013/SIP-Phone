@@ -31,35 +31,35 @@ int sip_uri_t::parse(const char* data, int data_size) {
     }
     cur_idx += idx;
 
-    while (cur_idx < data_size) {
-        if (data[cur_idx] == '?') {
-            ++cur_idx;
-            break;
+    // Parsing SIP URI params
+    idx = sip_param_t::list_param_parse(data + cur_idx, data_size - cur_idx, &m_uri_param_list, [](char _a, int* _pos) -> int {
+        if (_a == ';' || _a == ' ' || _a == '\t') {
+            ++(*_pos);
+            return 1; // continue
         }
-        if (data[cur_idx] == ';' || data[cur_idx] == ' ' || data[cur_idx] == '\t') {
-            ++cur_idx;
-            continue;
+        if (_a == '?') {
+            ++(*_pos);
+            return -1; // break
         }
-
-        idx = sip_param_t::single_param_parse(data + cur_idx, data_size - cur_idx, &m_uri_param_list);
-        if (idx == -1) {
-            return -1;
-        }
-        cur_idx += idx;
+        return 0; // parsing
+    });
+    if (idx == -1) {
+        return -1;
     }
+    cur_idx += idx;
 
-    while (cur_idx < data_size) {
-        if (data[cur_idx] == ' ' || data[cur_idx] == '\t' || data[cur_idx] == '&') {
-            ++cur_idx;
-            continue;
+    // Parsing SIP URI headers
+    idx = sip_param_t::list_param_parse(data + cur_idx, data_size - cur_idx, &m_hdr_list, [](char _a, int* _pos) -> int {
+        if (_a == ' ' || _a == '\t' || _a == '&') {
+            ++(*_pos);
+            return 1; // continue
         }
-
-        idx = sip_param_t::single_param_parse(data + cur_idx, data_size - cur_idx, &m_hdr_list);
-        if (idx == -1) {
-            return -1;
-        }
-        cur_idx += idx;
+        return 0; // parsing
+    });
+    if (idx == -1) {
+        return -1;
     }
+    cur_idx += idx;
 
     return cur_idx;
 }
