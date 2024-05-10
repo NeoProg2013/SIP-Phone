@@ -2,16 +2,11 @@
 
 
 bool sip_message_t::parse(const char* data, uint16_t data_size) {
-    if (data_size <= 4) {
+    if (!data || data_size <= 4) {
         return false;
     }
 
-    int cur_pos = 0;
-    if (!strncmp(data, "SIP/", 4)) {
-        cur_pos = parse_status_line(data, data_size);
-    } else {
-        cur_pos = parse_request_line(data, data_size);
-    }
+	int cur_pos = strncmp(data, "SIP/", 4) ? parse_request_line(data, data_size) : parse_status_line(data, data_size);
     if (cur_pos == -1) {
         return false;
     }
@@ -23,6 +18,8 @@ bool sip_message_t::parse(const char* data, uint16_t data_size) {
             return false;
         }
         cur_pos += idx;
+
+		printf("process hdr: %s, cur_pos=%d\r\n", sip_hdr.to_string().c_str(), cur_pos);
 
         if (sip_hdr.get_name().empty()) {
             break;
@@ -40,54 +37,32 @@ bool sip_message_t::parse(const char* data, uint16_t data_size) {
         } else if (!strcasecmp(hdr_name, "Max-Forwards")) {
             m_max_forwards = atoi(hdr_value);
         } else if (!strcasecmp(hdr_name, "From")) {
-            /*if (m_clsFrom.Parse(hdr_value, hdr_value_size) == -1) {
+            if (!m_from_hdr.parse(hdr_value, hdr_value_size)) {
                 return false;
-            }*/
+            }
         } else if (!strcasecmp(hdr_name, "To")) {
-            /*if (m_clsTo.Parse(hdr_value, hdr_value_size) == -1) {
+            if (!m_to_hdr.parse(hdr_value, hdr_value_size)) {
                 return false;
-            }*/
+            }
         } else if (!strcasecmp(hdr_name, "CSeq")) {
-            /*if (m_clsCSeq.Parse(hdr_value, hdr_value_size) == -1) {
+            if (!m_cseq_hdr.parse(hdr_value, hdr_value_size)) {
                 return false;
-            }*/
+            }
         } else if (!strcasecmp(hdr_name, "Call-ID")) {
-            /*if (m_clsCallId.Parse(hdr_value, hdr_value_size) == -1) {
-                return false;
-            }*/
+			m_call_id = hdr_value;
         } else if (!strcasecmp(hdr_name, "Contact")) {
-            /*if (ParseSipFrom(m_clsContactList, hdr_value, hdr_value_size) == -1) {
+            if (parse_contact(hdr_value, hdr_value_size) == -1) {
                 return false;
-            }*/
-        } else if (!strcasecmp(hdr_name, "Record-Route")) {
-            /*if (ParseSipFrom(m_clsRecordRouteList, hdr_value, hdr_value_size) == -1) {
-                return false;
-            }*/
-        } else if (!strcasecmp(hdr_name, "Route")) {
-            /*if (ParseSipFrom(m_clsRouteList, hdr_value, hdr_value_size) == -1) {
-                return false;
-            }*/
+            }
         } else if (!strcasecmp(hdr_name, "Authorization")) {
             /*if (ParseSipCredential(m_clsAuthorizationList, hdr_value, hdr_value_size) == -1) {
-                return false;
-            }*/
-        } else if (!strcasecmp(hdr_name, "WWW-Authenticate")) {
-            /*if (ParseSipChallenge(m_clsWwwAuthenticateList, hdr_value, hdr_value_size) == -1) {
-                return false;
-            }*/
-        } else if (!strcasecmp(hdr_name, "Proxy-Authorization")) {
-            /*if (ParseSipCredential(m_clsProxyAuthorizationList, hdr_value, hdr_value_size) == -1) {
-                return false;
-            }*/
-        } else if (!strcasecmp(hdr_name, "Proxy-Authenticate")) {
-            /*if (ParseSipChallenge(m_clsProxyAuthenticateList, hdr_value, hdr_value_size) == -1) {
                 return false;
             }*/
         } else if (!strcasecmp(hdr_name, "Content-Type")) {
             /*if (m_clsContentType.Parse(hdr_value, hdr_value_size) == -1) {
                 return false;
             }*/
-        } else if (!strcasecmp(hdr_name, "Content-data_size")) {
+        } else if (!strcasecmp(hdr_name, "Content-Length")) {
             m_content_data_size = atoi(hdr_value);
         } else if (!strcasecmp(hdr_name, "Expires")) {
             m_expires = atoi(hdr_value);
@@ -96,6 +71,17 @@ bool sip_message_t::parse(const char* data, uint16_t data_size) {
         } else {
             m_sip_hdr_list.push_back(sip_hdr);
         }
+
+        // Go to header end
+        /*for (bool is_detected = false; cur_pos < data_size; ++cur_pos) {
+            if (data[cur_pos] == '\r' || data[cur_pos] == '\n') {
+                is_detected = true;
+                continue;
+            }
+            if (is_detected) {
+                break;
+            }
+        }*/
     }
 
     if (m_content_data_size > 0) {
@@ -139,7 +125,6 @@ int sip_message_t::parse_status_line(const char* data, int data_size) {
 
     return -1;
 }
-
 int sip_message_t::parse_request_line(const char* data, int data_size) {
     char type = 0;
     for (int idx = 0, start_idx = -1; idx < data_size; ++idx) {
@@ -170,4 +155,28 @@ int sip_message_t::parse_request_line(const char* data, int data_size) {
         }
     }
     return -1;
+}
+int sip_message_t::parse_contact(const char* data, int data_size) {
+    int cur_idx = 0;
+    while (cur_idx < data_size) {
+        if (data[cur_idx] == ' ' || data[cur_idx] == '\t' || data[cur_idx] == ',') {
+            ++cur_idx;
+            continue;
+        }
+
+        sip_contact_hdr_t* hdr = new sip_contact_hdr_t();
+        if (!hdr) {
+            return -1;
+        }
+
+        int idx = hdr->parse(data + cur_idx, data_size - cur_idx);
+        if (idx == -1) {
+            delete hdr;
+            return -1;
+        }
+        cur_idx += idx;
+
+        m_contact_hdr_list.push_back(hdr);
+    }
+    return cur_idx;
 }

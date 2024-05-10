@@ -2,9 +2,8 @@
 
 
 int sip_param_t::parse(const char* data, int data_size) {
-    reset();
-
-    if (data == NULL || data_size <= 0) {
+    clear();
+    if (!data || data_size <= 0) {
         return -1;
     }
 
@@ -41,13 +40,14 @@ int sip_param_t::parse(const char* data, int data_size) {
     }
     return -1;
 }
-void sip_param_t::reset() {
+void sip_param_t::clear() {
     m_name.clear();
     m_value.clear();
 }
 
 
-int sip_param_list_t::param_list_parse(const char* data, int data_size) {
+
+int sip_param_t::list_param_parse(const char* data, int data_size, std::list<sip_param_t>* param_list) {
     int cur_pos = 0;
     while (cur_pos < data_size) {
         if (data[cur_pos] == ' ' || data[cur_pos] == '\t' || data[cur_pos] == ';') {
@@ -57,7 +57,7 @@ int sip_param_list_t::param_list_parse(const char* data, int data_size) {
             break;
         }
 
-        int idx = this->param_parse(data + cur_pos, data_size - cur_pos);
+        int idx = sip_param_t::single_param_parse(data + cur_pos, data_size - cur_pos, param_list);
         if (idx == -1) {
             return -1;
         }
@@ -65,18 +65,12 @@ int sip_param_list_t::param_list_parse(const char* data, int data_size) {
     }
     return cur_pos;
 }
-
-int sip_param_list_t::param_parse(const char* data, int data_size) {
-    sip_param_t* sip_param = new sip_param_t();
-    if (!sip_param) {
-        return -1;
-    }
-
-    int idx = sip_param->parse(data, data_size);
+int sip_param_t::single_param_parse(const char* data, int data_size, std::list<sip_param_t>* param_list) {
+    sip_param_t sip_param;
+    int idx = sip_param.parse(data, data_size);
     if (idx == -1) {
-        delete sip_param;
         return -1;
     }
-    m_param_list.push_back(sip_param);
+    param_list->push_back(sip_param);
     return idx;
 }

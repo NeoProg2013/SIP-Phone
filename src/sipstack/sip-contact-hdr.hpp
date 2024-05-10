@@ -1,9 +1,11 @@
-#ifndef _SIP_HDR_H_
-#define _SIP_HDR_H_
+#ifndef _SIP_CONTACT_HDR_H_
+#define _SIP_CONTACT_HDR_H_
 #include "project-base.hpp"
+#include "sip-param.hpp"
+#include "sip-uri.hpp"
 
 
-class sip_hdr_t {
+class sip_contact_hdr_t {
 //
 // public virtual API. Only virtual methods and ctors
 public:
@@ -18,10 +20,6 @@ public:
     int parse(const char* data, int data_size);
     void clear();
 
-    const std::string& get_name() const  { return m_name;  }
-    const std::string& get_value() const { return m_value; }
-    std::string to_string() const { return get_name() + ": " + get_value(); }
-
 //
 // protected API. Only non-virtual methods
 protected:
@@ -35,9 +33,13 @@ public:
 protected:
 
 protected:
-    std::string m_name;
-    std::string m_value;
+    std::string m_display_name;
+    sip_uri_t m_uri;
+    std::list<sip_param_t> m_param_list;
 };
 
+typedef sip_contact_hdr_t sip_to_hdr_t;
+typedef sip_contact_hdr_t sip_from_hdr_t;
 
-#endif // _SIP_HDR_H_
+
+#endif // _SIP_CONTACT_HDR_H_
