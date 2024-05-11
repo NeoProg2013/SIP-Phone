@@ -17,11 +17,11 @@ int sip_cseq_hdr_t::parse(const char* data, int data_size) {
 
     int idx = -1;
     for (idx = 0; idx < data_size; ++idx) {
-        if (m_seq == -1) {
+        if (m_cseq == -1) {
             if (data[idx] == ' ') {
                 std::string tmp;
                 tmp.append(data, idx);
-                m_seq = atoi(tmp.c_str());
+                m_cseq = atoi(tmp.c_str());
             }
         } else if (data[idx] == ' ' || data[idx] == '\t') {
             continue;
@@ -33,7 +33,7 @@ int sip_cseq_hdr_t::parse(const char* data, int data_size) {
     return idx;
 }
 void sip_cseq_hdr_t::clear() {
-    m_seq = -1;
+    m_cseq = -1;
     m_method.clear();
 }
 

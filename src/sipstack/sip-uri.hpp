@@ -8,7 +8,10 @@ class sip_uri_t {
 //
 // public virtual API. Only virtual methods and ctors
 public:
-
+    sip_uri_t() {}
+    sip_uri_t(const std::string& uri) { this->parse(uri.c_str(), uri.length()); }
+    sip_uri_t(const std::string &proto, const std::string &user, const std::string &host, int port)
+        : m_protocol(proto), m_user(user), m_host(host), m_port(port) {}
 //
 // protected virtual API. Only virtual methods and ctors
 protected:

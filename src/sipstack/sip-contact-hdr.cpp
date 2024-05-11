@@ -67,6 +67,9 @@ void sip_contact_hdr_t::clear() {
     m_uri.clear();
     m_param_list.clear();
 }
+void sip_contact_hdr_t::add_param(const std::string& n, const std::string& v) {
+    m_param_list.push_back(sip_param_t(n, v));
+}
 
 //
 // protected API. Only non-virtual methods

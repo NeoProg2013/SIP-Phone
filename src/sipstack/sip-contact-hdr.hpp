@@ -20,6 +20,12 @@ public:
     int parse(const char* data, int data_size);
     void clear();
 
+    void set_display_name(const std::string& v) { m_display_name = v;               }
+    void set_uri(const std::string& v)          { m_uri.parse(v.c_str(), v.size()); }
+    void set_uri(const sip_uri_t& v)            { m_uri = v;                        }
+
+    void add_param(const std::string& n, const std::string& v);
+
 //
 // protected API. Only non-virtual methods
 protected:

@@ -1,6 +1,14 @@
 #include "sip-param.hpp"
 
 
+//
+// public virtual API. Only virtual methods and ctors
+
+//
+// protected virtual API. Only virtual methods and ctors
+
+//
+// public API. Only non-virtual methods
 int sip_param_t::parse(const char* data, int data_size) {
     clear();
     if (!data || data_size <= 0) {
@@ -45,33 +53,39 @@ void sip_param_t::clear() {
     m_value.clear();
 }
 
+//
+// protected API. Only non-virtual methods
 
-
+//
+// public static API. Only static methods
 int sip_param_t::list_param_parse(const char* data, int data_size, std::list<sip_param_t>* param_list) {
-    return sip_param_t::list_param_parse(data, data_size, param_list, [](char a, int* cur_pos) -> int {
-        if (a == ' ' || a == '\t' || a == ';') {
-            ++(*cur_pos);
+    return sip_param_t::list_param_parse(data, data_size, param_list, [](char _a, int* _pos) -> int {
+        if (_a == ' ' || _a == '\t' || _a == ';') {
+            ++(*_pos);
             return 1; // continue
-        } else if (a == ',') {
+        } else if (_a == ',') {
             return -1; // break
         }
         return 0; // parsing
 	});
 }
 int sip_param_t::list_param_parse(const char* data, int data_size, std::list<sip_param_t>* param_list, std::function<int(char, int*)> f) {
-    int cur_pos = 0;
-    while (cur_pos < data_size) {
-        int idx = f(data[cur_pos], &cur_pos);
+    int cur_idx = 0;
+    while (cur_idx < data_size) {
+        int idx = f(data[cur_idx], &cur_idx);
         if (idx == -1) break;
         if (idx ==  1) continue;
 
         sip_param_t param;
-        idx = param.parse(data + cur_pos, data_size - cur_pos);
+        idx = param.parse(data + cur_idx, data_size - cur_idx);
         if (idx == -1) {
             return -1;
         }
         param_list->push_back(param);
-        cur_pos += idx;
+        cur_idx += idx;
     }
-    return cur_pos;
+    return cur_idx;
 }
+
+//
+// protected static API. Only static methods

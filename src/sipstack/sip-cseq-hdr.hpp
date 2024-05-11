@@ -7,6 +7,8 @@ class sip_cseq_hdr_t {
 //
 // public virtual API. Only virtual methods and ctors
 public:
+    sip_cseq_hdr_t() {}
+    sip_cseq_hdr_t(int cseq) : m_cseq(cseq) {}
 
 //
 // protected virtual API. Only virtual methods and ctors
@@ -17,6 +19,9 @@ protected:
 public:
     int parse(const char* data, int data_size);
     void clear();
+
+    void set_cseq(int cseq)                    { m_cseq = cseq;     }
+    void set_method(const std::string& method) { m_method = method; }
 
 //
 // protected API. Only non-virtual methods
@@ -31,7 +36,7 @@ public:
 protected:
 
 protected:
-    int m_seq               {-1};
+    int m_cseq               {-1};
     std::string m_method;
 };
 
