@@ -119,15 +119,15 @@ int sip_message_t::parse_status_line(const char* data, int data_size) {
         if (type != 2) {
             if (data[idx] == ' ') {
                 switch (type) {
-                    case 0:
-                        m_sip_version.append(data, idx);
-                        break;
-                    case 1: {
-                        std::string s;
-                        s.append(data + start_idx, idx - start_idx);
-                        m_status_code = atoi(s.c_str());
-                        break;
-                    }
+                case 0:
+                    m_sip_version.append(data, idx);
+                    break;
+                case 1: {
+                    std::string s;
+                    s.append(data + start_idx, idx - start_idx);
+                    m_status_code = atoi(s.c_str());
+                    break;
+                }
                 }
                 start_idx = idx + 1;
                 ++type;
@@ -142,7 +142,6 @@ int sip_message_t::parse_status_line(const char* data, int data_size) {
             }
         }
     }
-
     return -1;
 }
 int sip_message_t::parse_request_line(const char* data, int data_size) {
@@ -151,14 +150,14 @@ int sip_message_t::parse_request_line(const char* data, int data_size) {
         if (type != 2) {
             if (data[idx] == ' ') {
                 switch (type) {
-                    case 0:
-                        m_sip_method.append(data, idx);
-                        break;
-                    case 1:
-                        /*if (m_clsReqUri.Parse(data + start_idx, idx - start_idx) == -1) {
-                            return -1;
-                        }*/
-                        break;
+                case 0:
+                    m_sip_method.append(data, idx);
+                    break;
+                case 1:
+                    if (m_req_uri.parse(data + start_idx, idx - start_idx) == -1) {
+                        return -1;
+                    }
+                    break;
                 }
 
                 start_idx = idx + 1;
