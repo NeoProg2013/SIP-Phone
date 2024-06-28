@@ -43,11 +43,7 @@ bool sip_message_t::parse(const char* data, uint16_t data_size) {
             if (parse_via(hdr_value, hdr_value_size) == -1) {
                 return false;
             }
-        } else if (!global_env::strcasecmp(hdr_name, "Max-Forwards")) {
-            m_max_forwards = sip_hdr;
-        } else if (!global_env::strcasecmp(hdr_name, "Call-ID")) {
-			m_call_id = sip_hdr;
-		} else if (!global_env::strcasecmp(hdr_name, "From")) {
+        } else if (!global_env::strcasecmp(hdr_name, "From")) {
             if (!m_from_hdr.parse(hdr_value, hdr_value_size)) {
                 return false;
             }
@@ -96,19 +92,18 @@ std::string sip_message_t::to_string() const {
         s += m_sip_method + " " + m_req_uri.to_string() + " " + SIP_VERSION;
     }
     s += "\r\n";
-
-
+    
     for (const auto& via : m_via_list) {
         s += "Via: " + via.to_string() + "\r\n";
     }
     s += "From: " + m_from_hdr.to_string() + "\r\n";
     s += "To: " + m_to_hdr.to_string() + "\r\n";
     s += "CSeq: " + m_cseq_hdr.to_string() + "\r\n";
-	s += m_call_id.to_string() + "\r\n";
-
-    // Max-Forwards
-    if (!m_max_forwards.empty()) {
-        s += "Max-Forwards: " + m_max_forwards.to_string() + "\r\n";
+	for (const auto& h : m_contact_hdr_list) {
+		s += "Contact: " + h.to_string() + "\r\n";
+	}
+    for (const auto& h : m_sip_hdr_list) {
+        s += h.to_string() + "\r\n";
     }
 
     // Content-Type
@@ -133,9 +128,7 @@ std::string sip_message_t::to_string() const {
 void sip_message_t::clear() {
     m_sip_method.clear();
 	m_via_list.clear();
-    m_call_id.clear();
     m_content_data.clear();
-    m_max_forwards.clear();
     m_from_hdr.clear();
     m_to_hdr.clear();
     m_cseq_hdr.clear();

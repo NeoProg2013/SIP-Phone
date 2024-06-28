@@ -64,7 +64,6 @@ public:
     void set_req_uri(const std::string& uri)     { m_req_uri.parse(uri.c_str(), uri.size()); }
     void set_req_uri(const sip_uri_t& uri)       { m_req_uri = uri;                          }
 
-	sip_hdr_t& mutable_call_id_hdr()             { return m_call_id;                         }
     sip_from_hdr_t& mutable_from_hdr()           { return m_from_hdr;                        }
     sip_to_hdr_t& mutable_to_hdr()               { return m_to_hdr;                          }
     sip_cseq_hdr_t& mutable_cseq_hdr()           { return m_cseq_hdr;                        }
@@ -84,11 +83,10 @@ protected:
 
     std::string m_content_data;
 
-    sip_hdr_t m_call_id;
-    sip_hdr_t m_max_forwards;
     sip_from_hdr_t m_from_hdr;
     sip_to_hdr_t m_to_hdr;
     sip_cseq_hdr_t m_cseq_hdr;
+
     std::list<sip_contact_hdr_t> m_contact_hdr_list;
     std::list<sip_credential_hdr_t> m_credential_hdr_list;
     std::list<sip_via_hdr_t> m_via_list;
