@@ -1,6 +1,6 @@
 #ifndef _SIP_DIALOG_H_
 #define _SIP_DIALOG_H_
-#include "project-base.hpp"
+#include "global-env.hpp"
 #include "sip-message.hpp"
 
 
@@ -15,20 +15,28 @@ public:
     sip_message_t create_info();*/
     sip_message_t create_message(const std::string& sip_method); // to protected
 
+    void set_call_id(const std::string& call_id);
+
 protected:
     void make_branch(char* buffer, int buffer_size);
 
-protected:
-    std::string m_strFromId;
-    std::string m_strFromTag;
-    std::string m_strToId;
-    std::string m_strToTag;
-    std::string m_strCallId;
-    std::string m_strViaBranch;
-    int m_iSeq;
-    int m_iNextSeq;
+public: 
+    std::string m_from_user;
+    std::string m_from_domain;
+	int m_from_port{ -1 };
+    std::string m_from_tag;
+
+	std::string m_to_user;
+	std::string m_to_domain;
+	int m_to_port{ -1 };
+    std::string m_to_tag;
+
+    std::string m_call_id;
+    std::string m_via_branch;
+	int m_iSeq{ -1 };
+	int m_iNextSeq{ -1 };
     std::string m_strContactIp;
-    int m_iContactPort;
+	int m_iContactPort{ -1 };
     sip_transport_t m_eTransport;
     /*std::string m_strLocalRtpIp;
     int m_iLocalRtpPort;

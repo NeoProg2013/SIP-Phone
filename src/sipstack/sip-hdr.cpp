@@ -1,3 +1,4 @@
+#include "global-env.hpp"
 #include "sip-hdr.hpp"
 
 
@@ -70,6 +71,9 @@ int sip_hdr_t::parse(const char* data, int data_size) {
         }
     }
     return idx;
+}
+std::string sip_hdr_t::to_string() const {
+    return m_name + ": " + m_value;
 }
 void sip_hdr_t::clear() {
     m_name.clear();

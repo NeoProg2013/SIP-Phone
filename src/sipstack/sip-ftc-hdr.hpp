@@ -1,11 +1,14 @@
-#ifndef _SIP_CONTACT_HDR_H_
-#define _SIP_CONTACT_HDR_H_
-#include "project-base.hpp"
+#ifndef _SIP_FTC_HDR_H_
+#define _SIP_FTC_HDR_H_
+#include "global-env.hpp"
+#include "sip-hdr.hpp"
 #include "sip-param.hpp"
 #include "sip-uri.hpp"
 
 
-class sip_contact_hdr_t {
+// From, To, Contact headers
+
+class sip_ftc_hdr_t {
 //
 // public virtual API. Only virtual methods and ctors
 public:
@@ -18,6 +21,7 @@ protected:
 // public API. Only non-virtual methods
 public:
     int parse(const char* data, int data_size);
+    std::string to_string() const;
     void clear();
 
     void set_display_name(const std::string& v) { m_display_name = v;               }
@@ -39,13 +43,14 @@ public:
 protected:
 
 protected:
-    std::string m_display_name;
     sip_uri_t m_uri;
+    std::string m_display_name;
     std::list<sip_param_t> m_param_list;
 };
 
-typedef sip_contact_hdr_t sip_to_hdr_t;
-typedef sip_contact_hdr_t sip_from_hdr_t;
+typedef sip_ftc_hdr_t sip_contact_hdr_t;
+typedef sip_ftc_hdr_t sip_to_hdr_t;
+typedef sip_ftc_hdr_t sip_from_hdr_t;
 
 
-#endif // _SIP_CONTACT_HDR_H_
+#endif // _SIP_FTC_HDR_H_

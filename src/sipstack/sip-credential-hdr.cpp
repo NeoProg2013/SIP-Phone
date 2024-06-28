@@ -1,3 +1,4 @@
+#include "global-env.hpp"
 #include "sip-credential-hdr.hpp"
 
 //
@@ -29,7 +30,7 @@ int sip_credential_hdr_t::parse(const char* data, int data_size) {
     int cur_idx = idx;
 
     // Parsing params
-    idx = sip_param_t::list_param_parse(data + cur_idx, data_size - cur_idx, &m_param_list, [](char _a, int* _pos) -> int {
+    idx = sip_param_t::list_parse(data + cur_idx, data_size - cur_idx, &m_param_list, [](char _a, int* _pos) -> int {
         if (_a == ' ' || _a == '\t' || _a == ',') {
             ++(*_pos);
             return 1; // continue
@@ -102,7 +103,9 @@ std::string sip_credential_hdr_t::dequote_string(const std::string& s) const {
         }
         std::string tmp;
         tmp.append(s, 1, s.size() - 2);
+		return tmp;
     }
+	return s;
 }
 
 //

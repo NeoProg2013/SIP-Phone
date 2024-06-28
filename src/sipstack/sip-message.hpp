@@ -1,10 +1,12 @@
 #ifndef _SIP_MESSAGE_H_
 #define _SIP_MESSAGE_H_
-#include "project-base.hpp"
+#include "global-env.hpp"
 #include "sip-hdr.hpp"
-#include "sip-contact-hdr.hpp"
+#include "sip-via-hdr.hpp"
+#include "sip-ftc-hdr.hpp"
 #include "sip-cseq-hdr.hpp"
 #include "sip-credential-hdr.hpp"
+#include "sip-codes.hpp"
 
 static const int SIP_MESSAGE_MAX_LEN = 8192;
 static const int SIP_TAG_MAX_SIZE = 21;
@@ -53,59 +55,43 @@ enum sip_transport_t {
 class sip_message_t {
 public:
     bool parse(const char* data, uint16_t data_size);
+    std::string to_string() const;
     void clear();
 
     void add_header(const std::string& name, const std::string& value);
 
     void set_method(const std::string& m)        { m_sip_method = m;                         }
-    void set_call_id(const std::string& call_id) { m_call_id = call_id;                      }
-    void set_transport(sip_transport_t t)        { m_transport = t;                          }
     void set_req_uri(const std::string& uri)     { m_req_uri.parse(uri.c_str(), uri.size()); }
     void set_req_uri(const sip_uri_t& uri)       { m_req_uri = uri;                          }
 
+	sip_hdr_t& mutable_call_id_hdr()             { return m_call_id;                         }
     sip_from_hdr_t& mutable_from_hdr()           { return m_from_hdr;                        }
     sip_to_hdr_t& mutable_to_hdr()               { return m_to_hdr;                          }
     sip_cseq_hdr_t& mutable_cseq_hdr()           { return m_cseq_hdr;                        }
-
-    void print() {
-        printf("m_sip_method=%s\r\n", m_sip_method.c_str());
-        printf("m_sip_version=%s\r\n", m_sip_version.c_str());
-        printf("m_reason_phrase=%s\r\n", m_reason_phrase.c_str());
-        printf("m_user_agent=%s\r\n", m_user_agent.c_str());
-        printf("m_body=\r\n%s\r\n", m_body.c_str());
-        printf("m_status_code=%d\r\n", m_status_code);
-        printf("m_max_forwards=%d\r\n", m_max_forwards);
-        printf("m_content_data_size=%d\r\n", m_content_data_size);
-        printf("m_expires=%d\r\n", m_expires);
-    }
 
 protected:
     int parse_request_line(const char* data, int data_size);
     int parse_status_line(const char* data, int data_size);
     int parse_contacts(const char* data, int data_size);
     int parse_credentials(const char* data, int data_size);
+    int parse_via(const char* data, int data_size);
 
 protected:
+    sip_uri_t   m_req_uri;
     std::string m_sip_method;
-    std::string m_sip_version;
-    std::string m_reason_phrase;
-    std::string m_user_agent;
-	std::string m_call_id;
-    std::string m_body;
-    int m_status_code                       {-1};
-    int m_max_forwards                      {-1};
-    int m_content_data_size                 {-1};
-    int m_expires                           {-1};
-    sip_transport_t m_transport             {SIP_TRANSPORT_UDP};
+    int m_status_code                       {0};
+    std::string m_reason;
 
+    std::string m_content_data;
+
+    sip_hdr_t m_call_id;
+    sip_hdr_t m_max_forwards;
     sip_from_hdr_t m_from_hdr;
     sip_to_hdr_t m_to_hdr;
     sip_cseq_hdr_t m_cseq_hdr;
     std::list<sip_contact_hdr_t> m_contact_hdr_list;
     std::list<sip_credential_hdr_t> m_credential_hdr_list;
-
-    sip_uri_t m_req_uri;
-
+    std::list<sip_via_hdr_t> m_via_list;
     std::list<sip_hdr_t> m_sip_hdr_list;
 };
 

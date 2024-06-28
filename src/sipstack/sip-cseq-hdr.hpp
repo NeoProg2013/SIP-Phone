@@ -1,6 +1,6 @@
 #ifndef _SIP_CSEQ_HDR_H_
 #define _SIP_CSEQ_HDR_H_
-#include "project-base.hpp"
+#include "global-env.hpp"
 
 
 class sip_cseq_hdr_t {
@@ -9,6 +9,7 @@ class sip_cseq_hdr_t {
 public:
     sip_cseq_hdr_t() {}
     sip_cseq_hdr_t(int cseq) : m_cseq(cseq) {}
+    sip_cseq_hdr_t(int cseq, const std::string& method) : m_cseq(cseq), m_method(method) {}
 
 //
 // protected virtual API. Only virtual methods and ctors
@@ -18,6 +19,7 @@ protected:
 // public API. Only non-virtual methods
 public:
     int parse(const char* data, int data_size);
+    std::string to_string() const;
     void clear();
 
     void set_cseq(int cseq)                    { m_cseq = cseq;     }

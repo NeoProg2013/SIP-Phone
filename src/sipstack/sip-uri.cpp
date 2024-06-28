@@ -1,3 +1,4 @@
+#include "global-env.hpp"
 #include "sip-uri.hpp"
 
 //
@@ -32,7 +33,7 @@ int sip_uri_t::parse(const char* data, int data_size) {
     cur_idx += idx;
 
     // Parsing SIP URI params
-    idx = sip_param_t::list_param_parse(data + cur_idx, data_size - cur_idx, &m_uri_param_list, [](char _a, int* _pos) -> int {
+    idx = sip_param_t::list_parse(data + cur_idx, data_size - cur_idx, &m_uri_param_list, [](char _a, int* _pos) -> int {
         if (_a == ';' || _a == ' ' || _a == '\t') {
             ++(*_pos);
             return 1; // continue
@@ -49,7 +50,7 @@ int sip_uri_t::parse(const char* data, int data_size) {
     cur_idx += idx;
 
     // Parsing SIP URI headers
-    idx = sip_param_t::list_param_parse(data + cur_idx, data_size - cur_idx, &m_hdr_list, [](char _a, int* _pos) -> int {
+    idx = sip_param_t::list_parse(data + cur_idx, data_size - cur_idx, &m_hdr_list, [](char _a, int* _pos) -> int {
         if (_a == ' ' || _a == '\t' || _a == '&') {
             ++(*_pos);
             return 1; // continue
@@ -65,11 +66,33 @@ int sip_uri_t::parse(const char* data, int data_size) {
 }
 void sip_uri_t::clear() {
     m_port = 0;
-    m_protocol.clear();
     m_user.clear();
     m_host.clear();
     m_uri_param_list.clear();
     m_hdr_list.clear();
+}
+std::string sip_uri_t::to_string() const {
+    std::string s("sip:");
+
+    if (!m_user.empty()) {
+        s += m_user + "@";
+    }
+    s += m_host;
+    if (m_port != -1) {
+        s += ":" + std::to_string(m_port);
+    }
+
+    s += sip_param_t::list_to_string(m_uri_param_list);
+    s += sip_param_t::list_to_string(m_hdr_list, '?', '&');
+
+    return s;
+}
+
+void sip_uri_t::add_param(const std::string& name, const std::string& value) {
+    m_uri_param_list.push_back(sip_param_t(name, value));
+}
+void sip_uri_t::add_header(const std::string& name, const std::string& value) {
+    m_hdr_list.push_back(sip_param_t(name, value));
 }
 
 //
@@ -77,7 +100,6 @@ void sip_uri_t::clear() {
 int sip_uri_t::parse_protocol(const char* data, int data_size) {
     for (int idx = 0; idx < data_size; ++idx) {
         if (data[idx] == ':') {
-            m_protocol.append(data, idx);
             return idx + 1;
         }
     }

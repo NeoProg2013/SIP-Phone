@@ -1,3 +1,4 @@
+#include "global-env.hpp"
 #include "sip-dialog.hpp"
 
 
@@ -9,6 +10,9 @@
 
 //
 // public API. Only non-virtual methods
+void set_call_id(const std::string& call_id) {
+
+}
 /*sip_message_t sip_dialog_t::create_invite() {
     sip_message_t sip_message = this->create_message(SIP_METHOD_INVITE);
 
@@ -103,18 +107,14 @@ void sip_dialog_t::make_branch(char* buffer, int buffer_size) {
 }
 sip_message_t sip_dialog_t::create_message(const std::string& sip_method) {
     sip_message_t sip_message;
-    sip_message.set_call_id(m_strCallId);
-    sip_message.set_transport(m_eTransport);
+    sip_message.mutable_call_id_hdr().set_value(m_call_id);
     sip_message.set_method(sip_method);
 
-    if (m_strContactUri.empty()) {
-        sip_message.set_req_uri(sip_uri_t(SIP_PROTOCOL, m_strToId, m_strContactIp, m_iContactPort));
-    } else {
-        sip_message.set_req_uri(sip_uri_t(m_strContactUri));
-    }
+
+    sip_message.set_req_uri(sip_uri_t(m_to_user, m_to_domain, m_to_port));
 
     int cseq = m_iSeq;
-    if (sip_method == SIP_METHOD_ACK && sip_method == SIP_METHOD_CANCEL) {
+    /*if (sip_method == SIP_METHOD_ACK && sip_method == SIP_METHOD_CANCEL) {
         if (m_iNextSeq != 0) {
             m_iSeq = m_iNextSeq;
             m_iNextSeq = 0;
@@ -122,39 +122,25 @@ sip_message_t sip_dialog_t::create_message(const std::string& sip_method) {
             ++m_iSeq;
         }
         cseq = m_iSeq;
-    }
+    }*/
     sip_message.mutable_cseq_hdr().set_cseq(cseq);
     sip_message.mutable_cseq_hdr().set_method(sip_method);
-    sip_message.mutable_from_hdr().set_uri(sip_uri_t(SIP_PROTOCOL, m_strFromId, "127.0.0.1", 12345));
-    sip_message.mutable_from_hdr().add_param(SIP_TAG, m_strFromTag);
-    sip_message.mutable_to_hdr().set_uri(sip_uri_t(SIP_PROTOCOL, m_strToId.c_str(), m_strContactIp.c_str(), m_iContactPort));
-    if (!m_strToTag.empty()) {
-        sip_message.mutable_to_hdr().add_param(SIP_TAG, m_strToTag.c_str());
-    }
+    sip_message.mutable_from_hdr().set_uri(sip_uri_t(m_from_user, m_from_domain, m_from_port));
+    sip_message.mutable_from_hdr().add_param(SIP_TAG, m_from_tag);
+    sip_message.mutable_to_hdr().set_uri(sip_uri_t(m_to_user, m_to_domain, m_to_port));
+	if (!m_to_tag.empty()) {
+		sip_message.mutable_to_hdr().add_param(SIP_TAG, m_to_tag.c_str());
+	}
 
-    /*char szUri[1024];
-    std::string strProtocol = "sip";
-    int iPort = m_pclsSipStack->m_clsSetup.m_iLocalUdpPort;
+	//char pai_uri[512];
+	//const std::string sip_local_ip = "1.2.3.4"; // TODO: fix me
+	//uint16_t sip_local_port = 5060; // TODO: fix me
+	//snprintf(pai_uri, sizeof(pai_uri), "<sip:%s@%s:%d>", m_from_id.c_str(), sip_local_ip.c_str(), sip_local_port);
 
-    if (m_eTransport == E_SIP_TCP) {
-        iPort = m_pclsSipStack->m_clsSetup.m_iLocalTcpPort;
-    } else if (m_eTransport == E_SIP_TLS) {
-        strProtocol = "sips";
-        iPort = m_pclsSipStack->m_clsSetup.m_iLocalTlsPort;
-    }
+	//sip_message.add_header("P-Asserted-Identity", pai_uri);
+	//sip_message.add_header("Diversion", pai_uri);
 
-    if (strstr(m_pclsSipStack->m_clsSetup.m_strLocalIp.c_str(), ":")) {
-        snprintf(szUri, sizeof(szUri), "<%s:%s@[%s]:%d>", strProtocol.c_str(), m_strFromId.c_str(),
-                 m_pclsSipStack->m_clsSetup.m_strLocalIp.c_str(), iPort);
-    } else {
-        snprintf(szUri, sizeof(szUri), "<%s:%s@%s:%d>", strProtocol.c_str(), m_strFromId.c_str(),
-                 m_pclsSipStack->m_clsSetup.m_strLocalIp.c_str(), iPort);
-    }
-
-    pclsMessage->AddHeader("P-Asserted-Identity", szUri);
-    pclsMessage->AddHeader("Diversion", szUri);
-
-    if (m_clsRouteList.size() > 0) {
+    /*if (m_clsRouteList.size() > 0) {
         pclsMessage->m_clsRouteList = m_clsRouteList;
     } else {
         pclsMessage->AddRoute(m_strContactIp.c_str(), m_iContactPort, m_eTransport);

@@ -1,6 +1,7 @@
 #ifndef _SIP_HDR_H_
 #define _SIP_HDR_H_
-#include "project-base.hpp"
+#include "global-env.hpp"
+#include "sip-ftc-hdr.hpp"
 
 
 class sip_hdr_t {
@@ -16,12 +17,15 @@ protected:
 //
 // public API. Only non-virtual methods
 public:
-    int parse(const char* data, int data_size);
-    void clear();
+    virtual int parse(const char* data, int data_size);
+    virtual std::string to_string() const;
+    virtual void clear();
 
-    const std::string& get_name() const  { return m_name;  }
-    const std::string& get_value() const { return m_value; }
-    std::string to_string() const { return get_name() + ": " + get_value(); }
+	void set_name(const std::string& n)  { m_name = n;             }
+	void set_value(const std::string& v) { m_value = v;            }
+    const std::string& get_name() const  { return m_name;          }
+    const std::string& get_value() const { return m_value;         }
+	bool empty() const                   { return m_value.empty(); }
 
 //
 // protected API. Only non-virtual methods

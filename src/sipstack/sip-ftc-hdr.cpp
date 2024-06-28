@@ -1,4 +1,5 @@
-#include "sip-contact-hdr.hpp"
+#include "global-env.hpp"
+#include "sip-hdr.hpp"
 
 
 //
@@ -9,7 +10,7 @@
 
 //
 // public API. Only non-virtual methods
-int sip_contact_hdr_t::parse(const char* data, int data_size) {
+int sip_ftc_hdr_t::parse(const char* data, int data_size) {
     clear();
     if (!data || data_size <= 0) {
         return -1;
@@ -54,7 +55,7 @@ int sip_contact_hdr_t::parse(const char* data, int data_size) {
         m_uri.parse(data, idx);
     }
 
-    int idx2 = sip_param_t::list_param_parse(data + idx, data_size - idx, &m_param_list);
+    int idx2 = sip_param_t::list_parse(data + idx, data_size - idx, &m_param_list);
     if (idx2 == -1) {
         return -1;
     }
@@ -62,12 +63,20 @@ int sip_contact_hdr_t::parse(const char* data, int data_size) {
 
 	return idx;
 }
-void sip_contact_hdr_t::clear() {
-    m_display_name.clear();
+std::string sip_ftc_hdr_t::to_string() const {
+    std::string s;
+    if (!m_display_name.empty()) {
+        s += "\"" + m_display_name + "\" ";
+    }
+    s += "<" + m_uri.to_string() + ">";
+    return s;
+}
+void sip_ftc_hdr_t::clear() {
     m_uri.clear();
+    m_display_name.clear();
     m_param_list.clear();
 }
-void sip_contact_hdr_t::add_param(const std::string& n, const std::string& v) {
+void sip_ftc_hdr_t::add_param(const std::string& n, const std::string& v) {
     m_param_list.push_back(sip_param_t(n, v));
 }
 

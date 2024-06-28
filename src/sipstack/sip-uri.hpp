@@ -1,6 +1,6 @@
 #ifndef _SIP_URI_H_
 #define _SIP_URI_H_
-#include "project-base.hpp"
+#include "global-env.hpp"
 #include "sip-param.hpp"
 
 
@@ -10,8 +10,8 @@ class sip_uri_t {
 public:
     sip_uri_t() {}
     sip_uri_t(const std::string& uri) { this->parse(uri.c_str(), uri.length()); }
-    sip_uri_t(const std::string &proto, const std::string &user, const std::string &host, int port)
-        : m_protocol(proto), m_user(user), m_host(host), m_port(port) {}
+    sip_uri_t(const std::string& user, const std::string& host, int port)
+        : m_user(user), m_host(host), m_port(port) {}
 //
 // protected virtual API. Only virtual methods and ctors
 protected:
@@ -21,6 +21,10 @@ protected:
 public:
     int parse(const char* data, int data_size);
     void clear();
+	std::string to_string() const;
+
+	void add_param(const std::string& name, const std::string& value);
+	void add_header(const std::string& name, const std::string& value);
 
 //
 // protected API. Only non-virtual methods
@@ -38,10 +42,9 @@ public:
 protected:
 
 protected:
-    std::string	m_protocol;
     std::string	m_user;
     std::string	m_host;
-    int m_port                              {-1};
+    int m_port                              {0};
     std::list<sip_param_t> m_uri_param_list;
     std::list<sip_param_t> m_hdr_list;
 };

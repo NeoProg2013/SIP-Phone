@@ -1,14 +1,14 @@
-#ifndef _SIP_CREDENTIAL_HDR_H_
-#define _SIP_CREDENTIAL_HDR_H_
+#ifndef _SIP_VIA_HDR_H_
+#define _SIP_VIA_HDR_H_
 #include "global-env.hpp"
 #include "sip-param.hpp"
 
 
-class sip_credential_hdr_t {
+class sip_via_hdr_t {
 //
 // public virtual API. Only virtual methods and ctors
 public:
-
+    sip_via_hdr_t() {}
 //
 // protected virtual API. Only virtual methods and ctors
 protected:
@@ -17,13 +17,15 @@ protected:
 // public API. Only non-virtual methods
 public:
     int parse(const char* data, int data_size);
+    std::string to_string() const;
     void clear();
 
 //
 // protected API. Only non-virtual methods
 protected:
-    int parse_params(const char* data, int data_size);
-    std::string dequote_string(const std::string& s) const;
+    int parse_protocol(const char* data, int data_size);
+    int parse_by(const char* data, int data_size);
+
 //
 // public static API. Only static methods
 public:
@@ -33,19 +35,10 @@ public:
 protected:
 
 protected:
-    std::string	m_type;
-    std::string	m_user_name;
-    std::string	m_realm;
-    std::string	m_nonce;
-    std::string	m_uri;
-    std::string	m_response;
-    std::string	m_algorithm;
-    std::string	m_cnonce;
-    std::string	m_opaque;
-    std::string	m_qop;
-    std::string	m_nonce_count;
+    uint16_t m_port                     {0};
+    std::string m_host;
     std::list<sip_param_t> m_param_list;
 };
 
 
-#endif // _SIP_CREDENTIAL_HDR_H_
+#endif // _SIP_VIA_HDR_H_

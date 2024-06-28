@@ -1,3 +1,4 @@
+#include "global-env.hpp"
 #include "sip-cseq-hdr.hpp"
 
 
@@ -31,6 +32,9 @@ int sip_cseq_hdr_t::parse(const char* data, int data_size) {
         }
     }
     return idx;
+}
+std::string sip_cseq_hdr_t::to_string() const {
+    return std::to_string(m_cseq) + " " + m_method;
 }
 void sip_cseq_hdr_t::clear() {
     m_cseq = -1;

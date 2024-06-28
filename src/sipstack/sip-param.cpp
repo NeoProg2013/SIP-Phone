@@ -1,3 +1,4 @@
+#include "global-env.hpp"
 #include "sip-param.hpp"
 
 
@@ -58,8 +59,8 @@ void sip_param_t::clear() {
 
 //
 // public static API. Only static methods
-int sip_param_t::list_param_parse(const char* data, int data_size, std::list<sip_param_t>* param_list) {
-    return sip_param_t::list_param_parse(data, data_size, param_list, [](char _a, int* _pos) -> int {
+int sip_param_t::list_parse(const char* data, int data_size, std::list<sip_param_t>* param_list) {
+    return sip_param_t::list_parse(data, data_size, param_list, [](char _a, int* _pos) -> int {
         if (_a == ' ' || _a == '\t' || _a == ';') {
             ++(*_pos);
             return 1; // continue
@@ -69,7 +70,7 @@ int sip_param_t::list_param_parse(const char* data, int data_size, std::list<sip
         return 0; // parsing
 	});
 }
-int sip_param_t::list_param_parse(const char* data, int data_size, std::list<sip_param_t>* param_list, std::function<int(char, int*)> f) {
+int sip_param_t::list_parse(const char* data, int data_size, std::list<sip_param_t>* param_list, std::function<int(char, int*)> f) {
     int cur_idx = 0;
     while (cur_idx < data_size) {
         int idx = f(data[cur_idx], &cur_idx);
@@ -85,6 +86,18 @@ int sip_param_t::list_param_parse(const char* data, int data_size, std::list<sip
         cur_idx += idx;
     }
     return cur_idx;
+}
+std::string sip_param_t::list_to_string(const std::list<sip_param_t>& param_list, char first_sep, char sep) {
+    std::string s;
+    for (auto& p : param_list) {
+        if (s.empty()) {
+            s += first_sep;
+        } else {
+            s += sep;
+        }
+        s += p.to_string();
+    }
+	return s;
 }
 
 //
