@@ -21,6 +21,7 @@ public:
     std::string to_string() const;
     void clear();
 
+	void add_param(const std::string& n, const std::string& v);
 //
 // protected API. Only non-virtual methods
 protected:

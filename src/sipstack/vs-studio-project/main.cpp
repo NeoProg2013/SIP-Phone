@@ -165,25 +165,51 @@ sip_message_t create_register() {
 	reg.set_to(sip_to_hdr_t(sip_uri_t("user2", "sip.neoprog-iso.kube.itoolabs")));
 	reg.add_header("Call-ID", "tynweurthcynlrsghsckdg");
 	reg.add_header("User-Agent", "Test-UA");
-	reg.add_header("Allow", "INVITE");
+	reg.add_header("Allow", "PRACK, INVITE, ACK, BYE, CANCEL, UPDATE, INFO, SUBSCRIBE, NOTIFY, REFER, MESSAGE, OPTIONS");
+	reg.add_header("Expires", "300");
 	return reg;
 }
+ 
+// WWW-Authenticate: 
+// Digest 
+// nonce="XluAZtN3mthK5Dn1bfHzIrjg99E", 
+// realm="sip.neoprog-iso.kube.itoolabs", 
+// opaque="", 
+// qop="auth", 
+// algorithm=MD5
+
+
+// Authorization: 
+// Digest 
+// username="user3", 
+// realm="sip.neoprog-iso.kube.itoolabs", 
+// nonce="XluAZtN3mthK5Dn1bfHzIrjg99E", 
+// uri="sip:sip.neoprog-iso.kube.itoolabs", 
+// response="4724c9691cabfee4637f66bc7fed6697", 
+// algorithm=MD5, 
+// cnonce="e1a74732bbe549438a177253941f4cb0", 
+// qop=auth, 
+// nc=00000001
+
+
+
+
 
 int main() {
 
-	/*sip_message_t msg;
-	msg.parse((char*)auth_msg, sizeof(auth_msg));
+	//sip_message_t msg;
+	//msg.parse((char*)auth_msg, sizeof(auth_msg));
 
-	std::string v = "Digest realm=\"sip.neoprog-iso.kube.itoolabs\", opaque=\"\", qop=\"auth\", algorithm=MD5, nonce=\"UqR-ZknwZ9yrUAYEA4c9MUprgPs\"";
+	/*std::string v = "Digest realm=\"sip.neoprog-iso.kube.itoolabs\", opaque=\"\", qop=\"auth\", algorithm=MD5, nonce=\"UqR-ZknwZ9yrUAYEA4c9MUprgPs\"";
 	sip_credential_hdr_t request;
 	//request.parse(v.c_str(), v.size());
-	request.m_realm = "biloxi.com";
+	request.m_realm = "sip.neoprog-iso.kube.itoolabs";
 	request.m_qop = "auth";
-	request.m_nonce = "dcd98b7102dd2f0e8b11d0f600bfb0c093";
-	request.m_opaque = "5ccc069c403ebaf9f0171e9517f40e41";
+	request.m_nonce = "XluAZtN3mthK5Dn1bfHzIrjg99E";
+	request.m_opaque = "";
 
 	sip_credential_hdr_t response;
-	add_auth(request, "INVITE", "bob", "biloxi.com", "zanzibar", &response);
+	add_auth(request, "REGISTER", "user3", "sip.neoprog-iso.kube.itoolabs", "test123", &response);
 
 	return 1;*/
 
@@ -196,6 +222,8 @@ int main() {
 	//cnonce="62876b404afe4b84a10460cbdfa03b75", 
 	//qop=auth, 
 	//nc=00000001
+
+	//return 1;
 
 	// Initialise winsock
 	WSADATA wsa;
@@ -239,7 +267,9 @@ int main() {
 	sip_credential_hdr_t auth;
 	add_auth(challenge, "REGISTER", "user2", "sip.neoprog-iso.kube.itoolabs", "test123", &auth);
 	reg.add_header("Authorization", auth.to_string());
-	reg.get_to().add_param("tag", msg.get_to().get_param("tag"));
+	reg.set_cseq(2);
+	reg.get_via_hdr().add_param("rport", "");
+	//reg.get_to().add_param("tag", msg.get_to().get_param("tag"));
 
 	send("10.71.9.153", 5060, reg.to_string());
 	send("10.71.9.153", 5060, reg.to_string());

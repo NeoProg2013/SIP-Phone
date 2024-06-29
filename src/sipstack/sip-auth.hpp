@@ -25,7 +25,7 @@ std::string array_to_hex_string(const uint8_t* a, int len) {
 bool add_auth(const sip_credential_hdr_t& challenge, const std::string& method, const std::string& user_name, const std::string& domain,
 	          const std::string& pwd, sip_credential_hdr_t* response) {
 
-	const std::string cnonce = "0a4f113b";
+	const std::string cnonce = "e1a74732bbe549438a177253941f4cb0";
 
 	uint8_t md5_buffer[16] = { 0 };
 
@@ -57,6 +57,7 @@ bool add_auth(const sip_credential_hdr_t& challenge, const std::string& method, 
 	response->m_user_name = user_name;
 	response->m_response = a3;
 	response->m_cnonce = cnonce;
+	response->m_nc = "00000001";
 
 
 

@@ -72,6 +72,7 @@ public:
 	sip_from_hdr_t& get_from()           { return m_from_hdr;         }
 	sip_to_hdr_t& get_to()               { return m_to_hdr;           }
 	sip_credential_hdr_t& get_auth_hdr() { return m_auth_hdr_list[0]; }
+	sip_via_hdr_t& get_via_hdr()         { return m_via_list[0];      }
 
 protected:
     int parse_request_line(const char* data, int data_size);

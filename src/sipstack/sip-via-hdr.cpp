@@ -42,7 +42,6 @@ int sip_via_hdr_t::parse(const char* data, int data_size) {
 
     return cur_idx;
 }
-
 std::string sip_via_hdr_t::to_string() const {
     std::string s = "SIP/2.0/UDP " + m_host;
     if (m_port > 0) {
@@ -50,11 +49,13 @@ std::string sip_via_hdr_t::to_string() const {
     }
     return s + sip_param_t::list_to_string(m_param_list);
 }
-
 void sip_via_hdr_t::clear() {
     m_port = 0;
     m_host.clear();
     m_param_list.clear();
+}
+void sip_via_hdr_t::add_param(const std::string& n, const std::string& v) {
+	m_param_list.push_back(sip_param_t(n, v));
 }
 
 //

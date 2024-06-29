@@ -74,7 +74,7 @@ std::string sip_credential_hdr_t::to_string() const {
 	std::string s(m_type);
 	s += " opaque=\"" + m_opaque + "\"";
 
-	if (!m_qop.empty())       s += ", qop=\"" + m_qop + "\"";
+	if (!m_qop.empty())       s += ", qop=" + m_qop;
 	if (!m_user_name.empty()) s += ", username=\"" + m_user_name + "\"";
 	if (!m_realm.empty())     s += ", realm=\"" + m_realm + "\"";
 	if (!m_nonce.empty())     s += ", nonce=\"" + m_nonce + "\"";
