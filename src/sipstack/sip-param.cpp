@@ -49,6 +49,12 @@ int sip_param_t::parse(const char* data, int data_size) {
     }
     return -1;
 }
+std::string sip_param_t::to_string() const {
+	if (m_value.empty()) {
+		return m_name;
+	}
+	return m_name + "=" + m_value; 
+}
 void sip_param_t::clear() {
     m_name.clear();
     m_value.clear();

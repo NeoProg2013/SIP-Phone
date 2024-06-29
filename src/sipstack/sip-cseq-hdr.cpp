@@ -13,7 +13,7 @@
 int sip_cseq_hdr_t::parse(const char* data, int data_size) {
     clear();
     if (!data || data_size <= 0) {
-        return false;
+        return -1;
     }
 
     int idx = -1;

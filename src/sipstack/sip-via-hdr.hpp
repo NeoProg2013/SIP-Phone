@@ -9,6 +9,7 @@ class sip_via_hdr_t {
 // public virtual API. Only virtual methods and ctors
 public:
     sip_via_hdr_t() {}
+	sip_via_hdr_t(const std::string& host, uint16_t port, const std::string& branch);
 //
 // protected virtual API. Only virtual methods and ctors
 protected:

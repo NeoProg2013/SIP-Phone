@@ -78,7 +78,7 @@ std::string sip_uri_t::to_string() const {
         s += m_user + "@";
     }
     s += m_host;
-    if (m_port != -1) {
+    if (m_port > 0) {
         s += ":" + std::to_string(m_port);
     }
 

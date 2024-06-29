@@ -34,33 +34,36 @@ bool sip_message_t::parse(const char* data, uint16_t data_size) {
             break;
         }
 
-
         const char* const hdr_name = sip_hdr.get_name().c_str();
         const char* const hdr_value = sip_hdr.get_value().c_str();
         int hdr_value_size = sip_hdr.get_value().size();
 
         if (!global_env::strcasecmp(hdr_name, "Via")) {
-            if (parse_via(hdr_value, hdr_value_size) == -1) {
-                return false;
-            }
-        } else if (!global_env::strcasecmp(hdr_name, "From")) {
-            if (!m_from_hdr.parse(hdr_value, hdr_value_size)) {
-                return false;
-            }
-        } else if (!global_env::strcasecmp(hdr_name, "To")) {
-            if (!m_to_hdr.parse(hdr_value, hdr_value_size)) {
-                return false;
-            }
-        } else if (!global_env::strcasecmp(hdr_name, "CSeq")) {
-            if (!m_cseq_hdr.parse(hdr_value, hdr_value_size)) {
+            if (!parse_via(sip_hdr.get_value())) {
                 return false;
             }
         } else if (!global_env::strcasecmp(hdr_name, "Contact")) {
-            if (parse_contacts(hdr_value, hdr_value_size) == -1) {
+            if (!parse_contacts(sip_hdr.get_value())) {
                 return false;
             }
         } else if (!global_env::strcasecmp(hdr_name, "Authorization")) {
-            if (parse_credentials(hdr_value, hdr_value_size) == -1) {
+            if (!parse_credentials(sip_hdr.get_value())) {
+                return false;
+            }
+        } else if (!global_env::strcasecmp(hdr_name, "WWW-Authenticate")) {
+            if (!parse_auth(sip_hdr.get_value())) {
+                return false;
+            }
+        } else if (!global_env::strcasecmp(hdr_name, "From")) {
+            if (m_from_hdr.parse(hdr_value, hdr_value_size) == -1) {
+                return false;
+            }
+        } else if (!global_env::strcasecmp(hdr_name, "To")) {
+            if (m_to_hdr.parse(hdr_value, hdr_value_size) == -1) {
+                return false;
+            }
+        } else if (!global_env::strcasecmp(hdr_name, "CSeq")) {
+            if (m_cseq_hdr.parse(hdr_value, hdr_value_size) == -1) {
                 return false;
             }
         } else if (!global_env::strcasecmp(hdr_name, "Content-Length")) {
@@ -109,20 +112,11 @@ std::string sip_message_t::to_string() const {
     // Content-Type
     /*if (!m_content_data.empty()) {
         s += "Content-Type: application/sdp\r\n";
-		
-
     }*/
-    /*   if (m_clsContentType.Empty() == false)
-       {
-           iLen += snprintf(pszText + iLen, iTextSize - iLen, (m_bUseCompact ? "c: " : "Content-Type: "));
-           n = m_clsContentType.ToString(pszText + iLen, iTextSize - iLen);
-           if (n == -1) return -1;
-           iLen += n;
-           iLen += snprintf(pszText + iLen, iTextSize - iLen, "\r\n");
-       }
-
-       iLen += snprintf(pszText + iLen, iTextSize - iLen, "%s: %d\r\n", (m_bUseCompact ? "l" : "Content-Length"), m_iContentLength);
-   */
+    s += "Content-Length: " + std::to_string(m_content_data.size()) + "\r\n";
+    if (!m_content_data.empty()) {
+        s += "\r\n" + m_content_data;
+    }
     return s;
 }
 void sip_message_t::clear() {
@@ -144,11 +138,11 @@ void sip_message_t::add_header(const std::string& name, const std::string& value
 //
 // protected API. Only non-virtual methods
 int sip_message_t::parse_status_line(const char* data, int data_size) {
-    char type = 0;
+    char part = 0;
     for (int idx = 0, start_idx = -1; idx < data_size; ++idx) {
-        if (type != 2) {
+        if (part != 2) {
             if (data[idx] == ' ') {
-                switch (type) {
+                switch (part) {
                 case 0:
                     //m_sip_version.append(data, idx);
                     break;
@@ -157,7 +151,7 @@ int sip_message_t::parse_status_line(const char* data, int data_size) {
                     break;
                 }
                 start_idx = idx + 1;
-                ++type;
+                ++part;
             }
         } else {
             if (data[idx] == '\r') {
@@ -202,42 +196,48 @@ int sip_message_t::parse_request_line(const char* data, int data_size) {
     }
     return -1;
 }
-int sip_message_t::parse_contacts(const char* data, int data_size) {
-    int cur_idx = 0;
-    while (cur_idx < data_size) {
-        if (data[cur_idx] == ' ' || data[cur_idx] == '\t' || data[cur_idx] == ',') {
+bool sip_message_t::parse_contacts(const std::string& v) {
+    uint32_t cur_idx = 0;
+    while (cur_idx < v.size()) {
+        if (v[cur_idx] == ' ' || v[cur_idx] == '\t' || v[cur_idx] == ',') {
             ++cur_idx;
             continue;
         }
 
-		sip_contact_hdr_t hdr;;
-        int idx = hdr.parse(data + cur_idx, data_size - cur_idx);
+		sip_contact_hdr_t hdr;
+        int idx = hdr.parse(v.c_str() + cur_idx, v.size() - cur_idx);
         if (idx == -1) {
-            return -1;
+            return false;
         }
         cur_idx += idx;
 
         m_contact_hdr_list.push_back(hdr);
     }
-    return cur_idx;
+    return true;
 }
-int sip_message_t::parse_credentials(const char* data, int data_size) {
+bool sip_message_t::parse_credentials(const std::string& v) {
 	sip_credential_hdr_t hdr;
-    int idx = hdr.parse(data, data_size);
-    if (idx == -1) {
-        return -1;
+    if (hdr.parse(v.c_str(), v.size()) == -1) {
+        return false;
     }
     m_credential_hdr_list.push_back(hdr);
-    return idx;
+    return true;
 }
-int sip_message_t::parse_via(const char* data, int data_size) {
+bool sip_message_t::parse_via(const std::string& v) {
     sip_via_hdr_t hdr;
-    int idx = hdr.parse(data, data_size);
-    if (idx == -1) {
-        return -1;
+    if (hdr.parse(v.c_str(), v.size()) == -1) {
+        return false;
     }
     m_via_list.push_back(hdr);
-    return idx;
+    return true;
+}
+bool sip_message_t::parse_auth(const std::string& v) {
+    sip_credential_hdr_t hdr;
+    if (hdr.parse(v.c_str(), v.size()) == -1) {
+        return false;
+    }
+    m_auth_hdr_list.push_back(hdr);
+    return true;
 }
 
 //

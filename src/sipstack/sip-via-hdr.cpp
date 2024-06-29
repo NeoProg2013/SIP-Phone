@@ -3,6 +3,11 @@
 
 //
 // public virtual API. Only virtual methods and ctors
+sip_via_hdr_t::sip_via_hdr_t(const std::string& host, uint16_t port, const std::string& branch)
+	: m_host(host), m_port(port) {
+
+	m_param_list.push_back(sip_param_t("branch", branch));
+}
 
 //
 // protected virtual API. Only virtual methods and ctors

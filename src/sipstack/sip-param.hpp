@@ -18,9 +18,9 @@ protected:
 // public API. Only non-virtual methods
 public:
     int parse(const char* data, int data_size);
+	std::string to_string() const;
     void clear();
-    
-    std::string to_string() const        { return m_name + "=" + m_value; }
+	
     const std::string& get_name() const  { return m_name;  }
     const std::string& get_value() const { return m_value; }
 

@@ -8,7 +8,7 @@ class sip_hdr_t {
 //
 // public virtual API. Only virtual methods and ctors
 public:
-	sip_hdr_t() {}
+    sip_hdr_t() {}
     sip_hdr_t(const std::string& n, const std::string& v) : m_name(n), m_value(v) {}
 //
 // protected virtual API. Only virtual methods and ctors
@@ -39,6 +39,8 @@ public:
 // protected static API. Only static methods
 protected:
 
+//
+// fields
 protected:
     std::string m_name;
     std::string m_value;

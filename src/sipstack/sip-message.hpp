@@ -60,20 +60,26 @@ public:
 
     void add_header(const std::string& name, const std::string& value);
 
-    void set_method(const std::string& m)        { m_sip_method = m;                         }
-    void set_req_uri(const std::string& uri)     { m_req_uri.parse(uri.c_str(), uri.size()); }
-    void set_req_uri(const sip_uri_t& uri)       { m_req_uri = uri;                          }
+    void set_method(const std::string& m)     { m_sip_method = m;                                }
+    void set_req_uri(const std::string& uri)  { m_req_uri.parse(uri.c_str(), uri.size());        }
+    void set_req_uri(const sip_uri_t& uri)    { m_req_uri = uri;                                 }
+	void set_cseq(const int cseq)             { m_cseq_hdr = sip_cseq_hdr_t(cseq, m_sip_method); }
+	void add_via(const sip_via_hdr_t& via)	  { m_via_list.push_back(via);						 }
+	void set_from(const sip_from_hdr_t& from) { m_from_hdr = from;                               }
+	void set_to(const sip_to_hdr_t& to)       { m_to_hdr = to;                                   }
+	
 
-    sip_from_hdr_t& mutable_from_hdr()           { return m_from_hdr;                        }
-    sip_to_hdr_t& mutable_to_hdr()               { return m_to_hdr;                          }
-    sip_cseq_hdr_t& mutable_cseq_hdr()           { return m_cseq_hdr;                        }
+	sip_from_hdr_t& mutable_from_hdr()        { return m_from_hdr; }
+    sip_to_hdr_t& mutable_to_hdr()            { return m_to_hdr;   }
+    sip_cseq_hdr_t& mutable_cseq_hdr()        { return m_cseq_hdr; }
 
 protected:
     int parse_request_line(const char* data, int data_size);
     int parse_status_line(const char* data, int data_size);
-    int parse_contacts(const char* data, int data_size);
-    int parse_credentials(const char* data, int data_size);
-    int parse_via(const char* data, int data_size);
+    bool parse_contacts(const std::string& v);
+    bool parse_credentials(const std::string& v);
+    bool parse_via(const std::string& v);
+    bool parse_auth(const std::string& v);
 
 protected:
     sip_uri_t   m_req_uri;
@@ -89,6 +95,7 @@ protected:
 
     std::list<sip_contact_hdr_t> m_contact_hdr_list;
     std::list<sip_credential_hdr_t> m_credential_hdr_list;
+    std::list<sip_credential_hdr_t> m_auth_hdr_list;
     std::list<sip_via_hdr_t> m_via_list;
     std::list<sip_hdr_t> m_sip_hdr_list;
 };

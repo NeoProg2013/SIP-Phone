@@ -10,7 +10,7 @@
 
 //
 // public API. Only non-virtual methods
-int sip_ftc_hdr_t::parse(const char* data, int data_size) {
+int sip_contact_hdr_t::parse(const char* data, int data_size) {
     clear();
     if (!data || data_size <= 0) {
         return -1;
@@ -63,7 +63,7 @@ int sip_ftc_hdr_t::parse(const char* data, int data_size) {
 
 	return idx;
 }
-std::string sip_ftc_hdr_t::to_string() const {
+std::string sip_contact_hdr_t::to_string() const {
     std::string s;
     if (!m_display_name.empty()) {
         s += "\"" + m_display_name + "\" ";
@@ -71,12 +71,12 @@ std::string sip_ftc_hdr_t::to_string() const {
     s += "<" + m_uri.to_string() + ">";
     return s;
 }
-void sip_ftc_hdr_t::clear() {
+void sip_contact_hdr_t::clear() {
     m_uri.clear();
     m_display_name.clear();
     m_param_list.clear();
 }
-void sip_ftc_hdr_t::add_param(const std::string& n, const std::string& v) {
+void sip_contact_hdr_t::add_param(const std::string& n, const std::string& v) {
     m_param_list.push_back(sip_param_t(n, v));
 }
 
