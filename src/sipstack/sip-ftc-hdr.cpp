@@ -69,6 +69,8 @@ std::string sip_contact_hdr_t::to_string() const {
         s += "\"" + m_display_name + "\" ";
     }
     s += "<" + m_uri.to_string() + ">";
+	
+	s += sip_param_t::list_to_string(m_param_list);
     return s;
 }
 void sip_contact_hdr_t::clear() {
@@ -78,6 +80,14 @@ void sip_contact_hdr_t::clear() {
 }
 void sip_contact_hdr_t::add_param(const std::string& n, const std::string& v) {
     m_param_list.push_back(sip_param_t(n, v));
+}
+std::string sip_contact_hdr_t::get_param(const std::string& n) const {
+	for (const sip_param_t& p : m_param_list) {
+		if (p.get_name() == n) {
+			return p.get_value();
+		}
+	}
+	return "";
 }
 
 //

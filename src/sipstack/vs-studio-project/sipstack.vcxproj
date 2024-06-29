@@ -152,6 +152,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\md5.cpp" />
+    <ClCompile Include="..\sip-auth.cpp" />
     <ClCompile Include="..\sip-codes.cpp" />
     <ClCompile Include="..\sip-credential-hdr.cpp" />
     <ClCompile Include="..\sip-cseq-hdr.cpp" />
@@ -166,6 +168,8 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\md5.hpp" />
+    <ClInclude Include="..\sip-auth.hpp" />
     <ClInclude Include="..\sip-codes.hpp" />
     <ClInclude Include="..\sip-credential-hdr.hpp" />
     <ClInclude Include="..\sip-cseq-hdr.hpp" />

@@ -17,6 +17,7 @@ protected:
 // public API. Only non-virtual methods
 public:
     int parse(const char* data, int data_size);
+	std::string to_string() const;
     void clear();
 
 //
@@ -32,7 +33,7 @@ public:
 // protected static API. Only static methods
 protected:
 
-protected:
+public:
     std::string	m_type;
     std::string	m_user_name;
     std::string	m_realm;
@@ -43,7 +44,7 @@ protected:
     std::string	m_cnonce;
     std::string	m_opaque;
     std::string	m_qop;
-    std::string	m_nonce_count;
+    std::string	m_nc;
     std::list<sip_param_t> m_param_list;
 };
 

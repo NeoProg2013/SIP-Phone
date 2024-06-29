@@ -114,9 +114,10 @@ std::string sip_message_t::to_string() const {
         s += "Content-Type: application/sdp\r\n";
     }*/
     s += "Content-Length: " + std::to_string(m_content_data.size()) + "\r\n";
+	s += "\r\n";
     if (!m_content_data.empty()) {
-        s += "\r\n" + m_content_data;
-    }
+        s += m_content_data;
+	}
     return s;
 }
 void sip_message_t::clear() {

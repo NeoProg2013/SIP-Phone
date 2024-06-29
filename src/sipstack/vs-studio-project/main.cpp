@@ -2,6 +2,7 @@
 #include "global-env.hpp"
 #include "sip-message.hpp"
 #include <WS2tcpip.h>
+#include "sip-auth.hpp"
 #pragma comment (lib, "ws2_32.lib")
 
 /*static uint8_t msg[] =
@@ -73,32 +74,50 @@ static uint8_t msg[] =
 
 static uint8_t auth_msg[] =
 "SIP/2.0 401 Authentication Required\r\n"
-"Via: SIP/2.0/UDP 192.168.246.45:50713;branch=z9hG4bKPj3af08dca64e04cf2a6a224467467b5b2;rport=5060;received=10.71.6.9\r\n"
-"From: \"111\" <sip:user1@sip.neoprog-iso.kube.itoolabs>\r\n"
-"To: <sip:702@sip.neoprog-iso.kube.itoolabs>;tag=b-bc1x8jcbi3egg\r\n"
-"Call-ID: 84fd320bbed94402a3e33a47b7eef4a5\r\n"
-"CSeq: 2240 INVITE\r\n"
-"WWW-Authenticate: Digest realm=\"sip.neoprog-iso.kube.itoolabs\", opaque=\"\", qop=\"auth\", algorithm=MD5, nonce=\"mM9_ZtJhCaLD0VE-qQTVs0O4WLQ\"\r\n"
-"Allow: INVITE, ACK, CANCEL, BYE, INFO, REFER, SUBSCRIBE, NOTIFY\r\n"
+"Via: SIP/2.0/UDP 192.168.246.45:53086;branch=z9hG4bKPj90a55fddeb5a445eaa02cf96c998bbc1;received=10.71.6.54;rport=53086\r\n"
+"From: <sip:user2@sip.neoprog-iso.kube.itoolabs>;tag=38f007b011fa4084a21db6d32cebde9b\r\n"
+"To: <sip:user2@sip.neoprog-iso.kube.itoolabs>;tag=c-bbqtdopzhinr3\r\n"
+"Call-ID: 4acbd7cb97074855beb53fef02ee0573\r\n"
+"CSeq: 15730 REGISTER\r\n"
+"WWW-Authenticate: Digest realm=\"sip.neoprog-iso.kube.itoolabs\", opaque=\"\", qop=\"auth\", algorithm=MD5, nonce=\"UqR-ZknwZ9yrUAYEA4c9MUprgPs\"\r\n"
+"Allow: INVITE, ACK, CANCEL, BYE, INFO, REFER, SUBSCRIBE, NOTIFY, REGISTER\r\n"
 "Allow-Events: keep-alive\r\n"
 "Supported: timer\r\n"
 "Server: ITLCS 7.2\r\n"
 "Content-Length: 0\r\n"
 "\r\n";
 
-void send(int s, const char* ip, uint16_t port, const std::string& msg) {
+std::string local_ip;
+SOCKET s;
+
+void send(const char* ip, uint16_t port, const std::string& msg) {
+	std::cout << "======================================================" << std::endl;
+	std::cout << ">>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
+	std::cout << msg << std::endl;
+	std::cout << "======================================================" << std::endl;
+
 	sockaddr_in toaddr;
 	toaddr.sin_family = AF_INET;
 	toaddr.sin_addr.S_un.S_addr = inet_addr("10.71.9.153");
 	toaddr.sin_port = htons(5060);
 	std::cout << "sendto: " << sendto(s, msg.c_str(), msg.size(), 0, (sockaddr*)&toaddr, sizeof(toaddr)) << std::endl;
 }
-int recv(int s, char* buffer, int buffer_size) {
+std::string recv() {
+	char buffer[2048] = { 0 };
+
 	sockaddr_in fromaddr;
 	int fromlen = sizeof(fromaddr);
 	int recv = recvfrom(s, buffer, sizeof(buffer), 0, (sockaddr*)&fromaddr, &fromlen);
-	std::cout << buffer << std::endl;
-	return recv;
+
+	std::string response;
+	if (recv >= 0) {
+		response = std::string(buffer, recv);
+	}
+	std::cout << "======================================================" << std::endl;
+	std::cout << "<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
+	std::cout << response << std::endl;
+	std::cout << "======================================================" << std::endl;
+	return response;
 }
 std::string get_local_ip() {
 	char ac[80];
@@ -136,7 +155,47 @@ void resolve() {
 	}*/
 }
 
+sip_message_t create_register() {
+	sip_message_t reg;
+	reg.set_req_uri(sip_uri_t("", "sip.neoprig-iso.kube.itoolabs"));
+	reg.set_method("REGISTER");
+	reg.set_cseq(1);
+	reg.add_via(sip_via_hdr_t(local_ip, 5060, "z9hG4bKPj3af08"));
+	reg.set_from(sip_from_hdr_t(sip_uri_t("user2", "sip.neoprog-iso.kube.itoolabs"), "55d27c"));
+	reg.set_to(sip_to_hdr_t(sip_uri_t("user2", "sip.neoprog-iso.kube.itoolabs")));
+	reg.add_header("Call-ID", "tynweurthcynlrsghsckdg");
+	reg.add_header("User-Agent", "Test-UA");
+	reg.add_header("Allow", "INVITE");
+	return reg;
+}
+
 int main() {
+
+	/*sip_message_t msg;
+	msg.parse((char*)auth_msg, sizeof(auth_msg));
+
+	std::string v = "Digest realm=\"sip.neoprog-iso.kube.itoolabs\", opaque=\"\", qop=\"auth\", algorithm=MD5, nonce=\"UqR-ZknwZ9yrUAYEA4c9MUprgPs\"";
+	sip_credential_hdr_t request;
+	//request.parse(v.c_str(), v.size());
+	request.m_realm = "biloxi.com";
+	request.m_qop = "auth";
+	request.m_nonce = "dcd98b7102dd2f0e8b11d0f600bfb0c093";
+	request.m_opaque = "5ccc069c403ebaf9f0171e9517f40e41";
+
+	sip_credential_hdr_t response;
+	add_auth(request, "INVITE", "bob", "biloxi.com", "zanzibar", &response);
+
+	return 1;*/
+
+	//Authorization: Digest username="user2", 
+	//realm="sip.neoprog-iso.kube.itoolabs", 
+	//nonce="UqR-ZknwZ9yrUAYEA4c9MUprgPs", 
+	//uri="sip:sip.neoprog-iso.kube.itoolabs", 
+	//response="1d6eb06004d7a2d8b6b8b62d0a39a446", 
+	//algorithm=MD5, 
+	//cnonce="62876b404afe4b84a10460cbdfa03b75", 
+	//qop=auth, 
+	//nc=00000001
 
 	// Initialise winsock
 	WSADATA wsa;
@@ -147,7 +206,6 @@ int main() {
 	printf("Initialised\r\n");
 
 	// Create a socket
-	SOCKET s;
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) == INVALID_SOCKET) {
 		printf("Could not create socket : %d\r\n", WSAGetLastError());
 	}
@@ -164,26 +222,40 @@ int main() {
 	}
 	printf("Bind done\r\n");
 
-	std::string local_ip = get_local_ip();
+	local_ip = get_local_ip();
 	std::cout << "local_ip: " << local_ip << std::endl;
 	
 
 
-	
+	sip_message_t reg = create_register();
+	send("10.71.9.153", 5060, reg.to_string());
 
+	std::string response = recv();
 
+	sip_message_t msg;
+	msg.parse(response.c_str(), response.size());
+
+	const sip_credential_hdr_t& challenge = msg.get_auth_hdr();
+	sip_credential_hdr_t auth;
+	add_auth(challenge, "REGISTER", "user2", "sip.neoprog-iso.kube.itoolabs", "test123", &auth);
+	reg.add_header("Authorization", auth.to_string());
+	reg.get_to().add_param("tag", msg.get_to().get_param("tag"));
+
+	send("10.71.9.153", 5060, reg.to_string());
+	send("10.71.9.153", 5060, reg.to_string());
+	send("10.71.9.153", 5060, reg.to_string());
 
 	{
-		sip_message_t invite;
+		/*sip_message_t invite;
 		invite.set_req_uri(sip_uri_t("702", "sip.neoprig-iso.kube.itoolabs"));
-		invite.set_method("INVITE");
+		invite.set_method("REGISTER");
 		invite.set_cseq(1);
 		invite.add_via(sip_via_hdr_t(local_ip, 5060, "z9hG4bKPj3af08dca64e04cf2a6a224467467b5b2"));
 		invite.set_from(sip_from_hdr_t(sip_uri_t("user1", "sip.neoprog-iso.kube.itoolabs"), "55d27c3607a541d3bf0938aa9c5ebfdc"));
 		invite.set_to(sip_to_hdr_t(sip_uri_t("702", "sip.neoprog-iso.kube.itoolabs")));
 		std::cout << "===========================================" << std::endl;
 		std::cout << invite.to_string();
-		std::cout << "===========================================" << std::endl;
+		std::cout << "===========================================" << std::endl;*/
 
 
 		//invite.mutable_to_hdr().set_uri(sip_uri_t("702", "sip.neoprog-iso.kube.itoolabs"));

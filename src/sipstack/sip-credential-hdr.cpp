@@ -63,12 +63,28 @@ int sip_credential_hdr_t::parse(const char* data, int data_size) {
         } else if (!strcmp(name, "opaque")) {
             m_opaque = dequote_string(value);
         } else if (!strcmp(name, "qop")) {
-            m_qop = value;
+            m_qop = dequote_string(value);
         } else if (!strcmp(name, "nc")) {
-            m_nonce_count = value;
+            m_nc = value;
         }
     }
     return cur_idx;
+}
+std::string sip_credential_hdr_t::to_string() const {
+	std::string s(m_type);
+	s += " opaque=\"" + m_opaque + "\"";
+
+	if (!m_qop.empty())       s += ", qop=\"" + m_qop + "\"";
+	if (!m_user_name.empty()) s += ", username=\"" + m_user_name + "\"";
+	if (!m_realm.empty())     s += ", realm=\"" + m_realm + "\"";
+	if (!m_nonce.empty())     s += ", nonce=\"" + m_nonce + "\"";
+	if (!m_uri.empty())       s += ", uri=\"" + m_uri + "\"";
+	if (!m_response.empty())  s += ", response=\"" + m_response + "\"";
+	if (!m_algorithm.empty()) s += ", algorithm=" + m_algorithm;
+	if (!m_cnonce.empty())    s += ", cnonce=\"" + m_cnonce + "\"";
+	if (!m_nc.empty())        s += ", nc=" + m_nc;
+
+	return s;
 }
 void sip_credential_hdr_t::clear() {
     m_type.clear();
@@ -81,7 +97,7 @@ void sip_credential_hdr_t::clear() {
     m_cnonce.clear();
     m_opaque.clear();
     m_qop.clear();
-    m_nonce_count.clear();
+    m_nc.clear();
     m_param_list.clear();
 }
 

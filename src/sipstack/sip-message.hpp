@@ -67,11 +67,11 @@ public:
 	void add_via(const sip_via_hdr_t& via)	  { m_via_list.push_back(via);						 }
 	void set_from(const sip_from_hdr_t& from) { m_from_hdr = from;                               }
 	void set_to(const sip_to_hdr_t& to)       { m_to_hdr = to;                                   }
-	
 
-	sip_from_hdr_t& mutable_from_hdr()        { return m_from_hdr; }
-    sip_to_hdr_t& mutable_to_hdr()            { return m_to_hdr;   }
-    sip_cseq_hdr_t& mutable_cseq_hdr()        { return m_cseq_hdr; }
+
+	sip_from_hdr_t& get_from()           { return m_from_hdr;         }
+	sip_to_hdr_t& get_to()               { return m_to_hdr;           }
+	sip_credential_hdr_t& get_auth_hdr() { return m_auth_hdr_list[0]; }
 
 protected:
     int parse_request_line(const char* data, int data_size);
@@ -93,11 +93,11 @@ protected:
     sip_to_hdr_t m_to_hdr;
     sip_cseq_hdr_t m_cseq_hdr;
 
-    std::list<sip_contact_hdr_t> m_contact_hdr_list;
-    std::list<sip_credential_hdr_t> m_credential_hdr_list;
-    std::list<sip_credential_hdr_t> m_auth_hdr_list;
-    std::list<sip_via_hdr_t> m_via_list;
-    std::list<sip_hdr_t> m_sip_hdr_list;
+    std::vector<sip_contact_hdr_t> m_contact_hdr_list;
+    std::vector<sip_credential_hdr_t> m_credential_hdr_list;
+    std::vector<sip_credential_hdr_t> m_auth_hdr_list;
+    std::vector<sip_via_hdr_t> m_via_list;
+    std::vector<sip_hdr_t> m_sip_hdr_list;
 };
 
 

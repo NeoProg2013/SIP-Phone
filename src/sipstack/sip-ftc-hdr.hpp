@@ -39,6 +39,7 @@ public:
     void set_uri(const sip_uri_t& v)            { m_uri = v;                        }
 
     void add_param(const std::string& n, const std::string& v);
+	std::string get_param(const std::string& n) const;
 
 //
 // protected API. Only non-virtual methods
